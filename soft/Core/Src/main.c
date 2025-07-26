@@ -28,6 +28,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "arm_math.h"
+#include "rtthread.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -107,6 +108,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+     HAL_GPIO_TogglePin(RUN_LED_GPIO_Port,RUN_LED_Pin);
+     rt_thread_mdelay(300);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
