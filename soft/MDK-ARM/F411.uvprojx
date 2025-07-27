@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F411xE,ARM_MATH_CM4,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../Middlewares/ST/ARM/DSP/Inc;../RT-Thread;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/components/finsh/inc/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/include/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/fcntl/msvc/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/fcntl/octal/;..\User\Driver;..\User\App;..\User\Alg</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../Middlewares/ST/ARM/DSP/Inc;../RT-Thread;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/components/finsh/inc/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/include/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/fcntl/msvc/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/fcntl/octal/;../User/Driver;../User/App;../User/Alg</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

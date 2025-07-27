@@ -121,13 +121,12 @@ void rt_hw_console_output(const char *str)
 #endif
 
 #ifdef RT_USING_FINSH
- /* USER CODE BEGIN WHILE */
 #include "app_finsh_thread.h"
 
 char rt_hw_console_getchar(void)
 {
 
-    /* Note: the initial value of ch must < 0 */
+   
     int ch = -1;
     extern ring_queue_t  r_queue;
 	ch = RingQueue_Read(&r_queue);
@@ -139,5 +138,4 @@ char rt_hw_console_getchar(void)
     return ch;
    
 }
- /* USER CODE END WHILE */
 #endif

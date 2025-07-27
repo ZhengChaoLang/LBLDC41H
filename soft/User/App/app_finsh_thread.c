@@ -69,22 +69,23 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size){
 	}
 }
 
-//#include "app_finsh_thread.h"
-//char rt_hw_console_getchar(void)
-//{
-//    /* Note: the initial value of ch must < 0 */
-//    int ch = -1;
+/*
 
-////    if (__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_RXNE) != RESET)
-////    {
-////        ch = UartHandle.Instance->DR & 0xff;
-////    }
-//		ch = RingQueue_Read(&r_queue);
-//		
-//	
-//    if(ch == -1)
-//    {
-//        rt_thread_mdelay(10);
-//    }
-//    return ch;
-//}
+#include "app_finsh_thread.h"
+
+char rt_hw_console_getchar(void)
+{
+
+   
+    int ch = -1;
+    extern ring_queue_t  r_queue;
+	ch = RingQueue_Read(&r_queue);
+	
+    if(ch == -1)
+    {
+        rt_thread_mdelay(10);
+    }
+    return ch;
+   
+}
+*/

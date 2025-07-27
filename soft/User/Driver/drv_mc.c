@@ -6,7 +6,8 @@
 #include "app_foc.h"
 #include "rtthread.h"
 typedef void (*ad_iqr_hook_t)(void* param);
-uint16_t adc_current_val[3];    //电压采集原始值               
+volatile uint16_t adc_current_val[3];    //电压采集原始值 
+ int debug_adc=0;
 #define DRV_ADC_HOOK_NUB    10
 //adc中断回调钩子结构体
 typedef struct{
@@ -30,6 +31,7 @@ void DrvAdc_SetIqrHook(drv_adc_t * adcx, ad_iqr_hook_t func,const char* func_nam
            adcx->hook[i].name = func_name;
            return;
        }
+       i++;
    }       
 }
 //设置钩子函数参数
@@ -54,7 +56,9 @@ void DrvAdc_IqrHook(drv_adc_t * adcx){
        if(adcx->hook[i].func !=NULL){
            adcx->hook[i].func(adcx->hook[i].param);           
        }
-   }       
+       i++;
+   }
+    debug_adc++;   
 }
 
 float Adc_SempVoltCurrent(float vlot){    
@@ -81,12 +85,33 @@ void HAL_ADCEx_InjectedConvCpltCallback(ADC_HandleTypeDef *hadc){
 	adc_current_val[0] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1);
 	adc_current_val[1] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2);
 	adc_current_val[2] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3); 
-    DrvAdc_IqrHook(&drv_adc1);
+    DrvAdc_IqrHook(&drv_adc1); 
 }
 
+void DrvMc_EnablePwm(void *param){
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
+    HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+    HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
+    HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_3); 
+}
+
+void DrvMc_DisabilityPwm(void *param){
+    HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_2);
+    HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_3);
+    HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_4);
+    HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
+    HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_2);
+    HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_3);    
+}
 //
 int DrvMc_Init(){
-	HAL_ADCEx_InjectedStart_IT(&hadc1);
+	HAL_ADCEx_InjectedStart_IT(&hadc1);    
+    DrvMc_EnablePwm(NULL);
+    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, MC_TIM_ARR-5);
     DrvAdc_SetIqrHook(&drv_adc1, Adc_CurrentUpdate_Hook, "CurUpdate");
     DrvAdc_SetIqrHook(&drv_adc1, AppFoc_RunStep, "Foc_Run");
 	DrvAdc_SetHookParam(&drv_adc1, "CurUpdate", (void*)adc_current_val);
@@ -95,3 +120,26 @@ int DrvMc_Init(){
 }
 //INIT_DEVICE_EXPORT(DrvMc_Init);
 
+void ad_debug_thread(void* arg)
+{
+    while(1){
+        rt_kprintf("ad cnt:%d,%d\r\n", debug_adc,adc_current_val[1]);
+        rt_thread_mdelay(200);
+    }
+}
+void COM_DrvDebug()
+{
+    static rt_thread_t debug_ad =NULL; 
+    if(debug_ad == NULL){
+        debug_ad =rt_thread_create( "debug_ad",
+                                    ad_debug_thread,
+                                    NULL,
+                                    256, 20, 2);
+        rt_thread_startup(debug_ad);
+    }
+    else{
+        rt_thread_delete(debug_ad);
+        debug_ad = NULL;
+    }   
+}
+MSH_CMD_EXPORT(COM_DrvDebug , printf ad run);
