@@ -697,6 +697,41 @@
               <FileType>1</FileType>
               <FilePath>..\User\Alg\SimpleRingQueue.c</FilePath>
             </File>
+            <File>
+              <FileName>algo_math.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Alg\algo_math.c</FilePath>
+            </File>
+            <File>
+              <FileName>filter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Alg\filter.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Alg\pid.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Foc</GroupName>
+          <Files>
+            <File>
+              <FileName>drv_mc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Driver\drv_mc.c</FilePath>
+            </File>
+            <File>
+              <FileName>foc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Alg\foc.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_foc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\App\app_foc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
