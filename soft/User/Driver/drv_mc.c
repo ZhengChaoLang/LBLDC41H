@@ -6,10 +6,10 @@
 #include "app_foc.h"
 #include "rtthread.h"
 typedef void (*ad_iqr_hook_t)(void* param);
-volatile uint16_t adc_current_val[3];    //µçÑ¹²É¼¯Ô­Ê¼Öµ 
+volatile uint16_t adc_current_val[3];    //ç”µæµ adcåŸå§‹é‡‡æ ·å€¼Öµ 
  int debug_adc=0;
 #define DRV_ADC_HOOK_NUB    10
-//adcÖĞ¶Ï»Øµ÷¹³×Ó½á¹¹Ìå
+//adcå›è°ƒHOOKç»“æ„ä½“
 typedef struct{
     struct{
         ad_iqr_hook_t func;
@@ -20,7 +20,7 @@ typedef struct{
 
 drv_adc_t drv_adc1={0};
 
-//ÉèÖÃadc»Øµ÷º¯Êı
+//
 void DrvAdc_SetIqrHook(drv_adc_t * adcx, ad_iqr_hook_t func,const char* func_name){
    uint8_t i=0;
    if((func == NULL)||(func_name == NULL))
@@ -34,7 +34,7 @@ void DrvAdc_SetIqrHook(drv_adc_t * adcx, ad_iqr_hook_t func,const char* func_nam
        i++;
    }       
 }
-//ÉèÖÃ¹³×Óº¯Êı²ÎÊı
+//è®¾ç½®
 uint8_t DrvAdc_SetHookParam(drv_adc_t * adcx,const char* func_name,void * param){
    
    if(adcx == NULL)
@@ -49,7 +49,7 @@ uint8_t DrvAdc_SetHookParam(drv_adc_t * adcx,const char* func_name,void * param)
 }
 
 
-//µ÷ÓÃhook
+//adcå›è°ƒå‡½æ•°hook
 void DrvAdc_IqrHook(drv_adc_t * adcx){
    uint8_t i=0;
    while(i < DRV_ADC_HOOK_NUB){
@@ -61,6 +61,7 @@ void DrvAdc_IqrHook(drv_adc_t * adcx){
     debug_adc++;   
 }
 
+//ç”µå‹è½¬æ¢ç”µæµ
 float Adc_SempVoltCurrent(float vlot){    
     return vlot;
 }
@@ -73,14 +74,14 @@ void AdcMc_CurrentUpdata(foc_motor_t *motor, uint16_t*adc_val)
 	motor->phase_i.c = Adc_SempVoltCurrent(adc_val[2]*3.3f/4095.0f);   
 }
 
-//µçÁ÷²ÉÑù¸üĞÂ»Øµ÷º¯Êı
+//å›è°ƒå‡½æ•°ï¼šä¸‰ç›¸ç”µæµå€¼
 void Adc_CurrentUpdate_Hook(void* arg){
     extern foc_motor_t m1; 
     AdcMc_CurrentUpdata(&m1, (uint16_t *)arg);
 }
 
 
-//adc ×¢ÈëÖĞ¶Ï»Øµ÷
+//adc æ³¨å…¥è½¬æ¢ç»“æŸå›è°ƒ
 void HAL_ADCEx_InjectedConvCpltCallback(ADC_HandleTypeDef *hadc){
 	adc_current_val[0] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1);
 	adc_current_val[1] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2);
@@ -88,6 +89,7 @@ void HAL_ADCEx_InjectedConvCpltCallback(ADC_HandleTypeDef *hadc){
     DrvAdc_IqrHook(&drv_adc1); 
 }
 
+// ä½¿èƒ½ç”µæœºé©±åŠ¨
 void DrvMc_EnablePwm(void *param){
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
@@ -95,19 +97,23 @@ void DrvMc_EnablePwm(void *param){
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
     HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
     HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
-    HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_3); 
+    HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_3);
+    DRV_EN_PIN(DRV_EN);
 }
 
+// å¤±èƒ½ç”µæœºé©±åŠ¨
 void DrvMc_DisabilityPwm(void *param){
+    DRV_EN_PIN(DRV_DE);  
     HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
     HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_2);
     HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_3);
     HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_4);
     HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
     HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_2);
-    HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_3);    
+    HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_3);
+      
 }
-//
+// 
 int DrvMc_Init(){
 	HAL_ADCEx_InjectedStart_IT(&hadc1);    
     DrvMc_EnablePwm(NULL);
@@ -117,14 +123,17 @@ int DrvMc_Init(){
 	DrvAdc_SetHookParam(&drv_adc1, "CurUpdate", (void*)adc_current_val);
     extern foc_motor_t m1; 
     DrvAdc_SetHookParam(&drv_adc1, "Foc_Run",(void*)&m1);
+    return 0;
 }
-//INIT_DEVICE_EXPORT(DrvMc_Init);
+INIT_DEVICE_EXPORT(DrvMc_Init);
 
+
+//mshæ‰“å°ä¸‰ç›¸ç”µæµ
 void ad_debug_thread(void* arg)
 {
     while(1){
-        rt_kprintf("ad cnt:%d,%d\r\n", debug_adc,adc_current_val[1]);
-        rt_thread_mdelay(200);
+        rt_kprintf("%d,%d,%d\n", adc_current_val[0], adc_current_val[1],adc_current_val[2]);
+        rt_thread_mdelay(10);
     }
 }
 void COM_DrvDebug()

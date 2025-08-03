@@ -2,8 +2,8 @@
 #define  __FILTER_H__
 
 typedef struct{
-	float a;			///滤波系数
-	float data_last;	///上一个采样周期的数据（滤波后）
+	float a;			///婊ゆ尝绯绘暟
+	float data_last;	///涓婁竴娆＄殑鏁版嵁
 }ema_filter_t;
 
 

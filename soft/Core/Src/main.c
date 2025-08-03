@@ -30,6 +30,8 @@
 #include "arm_math.h"
 #include "rtthread.h"
 #include "drv_mc.h"
+#include "drv_hall.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -88,7 +90,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+    goto JUMP_CUBE_INIT;
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -102,7 +104,10 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
-    DrvMc_Init();
+  JUMP_CUBE_INIT:
+  //DrvMc_Init();
+  hall_sor1.installation_angle = DRV_HALL_INSTALLATION_ANGLE120;
+  DrvHall_Init(&hall_sor1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -184,7 +189,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
-
+  if(htim->Instance == TIM2){
+  
+  }
+  
+  
   /* USER CODE END Callback 1 */
 }
 

@@ -12,7 +12,7 @@
 
 
 /*
- * @brief: ¿ËÀ­¿Ë±ä»»
+ * @brief: å…‹æ‹‰å…‹å˜æ¢
  * @param[in]:
  * @return:
  */
@@ -24,7 +24,7 @@ void FOC_Clark(foc_phase_prarm_t* phase_prarm, foc_clark_prarm_t* out_prarm)
 
 
 /*
- * @brief: ÅÁ¿Ë±ä»»
+ * @brief: å¸•å…‹å˜æ¢
  * @param[in]:
  * @return:
  */
@@ -35,7 +35,7 @@ void FOC_Park(foc_clark_prarm_t* clark_prarm, float theta, foc_park_prarm_t* out
 }
 
 /*
- * @brief: ·´ÅÁ¿Ë±ä»»
+ * @brief: å¸•å…‹é€†å˜æ¢
  * @param[in]:
  * @return:
  */
@@ -47,7 +47,7 @@ void FOC_InvPark(foc_park_prarm_t* park_prarm, float theta, foc_clark_prarm_t* o
 
 
 /*
- * @brief: SVPWMÄ£¿é
+ * @brief: SVPWM
  * @param[in]:
  * @return:
  */
@@ -184,7 +184,7 @@ void FOC_Svpwm(foc_motor_t* motor, foc_clark_prarm_t * u_two_aixs)
 }
 
 /*
- * @brief:	»ù±¾µçÁ÷»·,·ÅÖĞ¶ÏÀï
+ * @brief:	FOCç”µæµç¯è®¡ç®—
  * @param[in]:
  * @return:
  */
@@ -210,12 +210,14 @@ foc_clark_prarm_t* FOC_CurrentLoopCal(foc_motor_t * motor, float ref_iq)
 	return &motor->u_alpha_beta;
 }
 
+//é€Ÿåº¦ç¯è®¡ç®—
 float FOC_SpeedLoopCal(foc_motor_t * motor, float ref_speed)
 {
 	//ËÙ¶È»·PID
     return motor->ctrl.pid_cal(motor->ctrl.pid_speedLoop, OMEGA_TO_RPM(motor->det_theta_m));    
 }
 
+//ä½ç½®ç¯è®¡ç®—
 float FOC_PositionLoopCal(foc_motor_t * motor, float ref_position_rad)
 {
 	//Î»ÖÃ»·PID

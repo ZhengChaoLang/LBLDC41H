@@ -678,6 +678,18 @@
         </Group>
         <Group>
           <GroupName>Drv</GroupName>
+          <Files>
+            <File>
+              <FileName>drv_hall.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Driver\drv_hall.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_speed_sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Driver\drv_speed_sensor.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>App</GroupName>

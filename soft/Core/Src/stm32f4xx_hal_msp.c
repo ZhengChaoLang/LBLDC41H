@@ -22,6 +22,13 @@
 #include "main.h"
 /* USER CODE BEGIN Includes */
 
+#include "adc.h"
+#include "dma.h"
+#include "i2c.h"
+#include "tim.h"
+#include "usart.h"
+#include "gpio.h"
+#include "rtthread.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -78,5 +85,20 @@ void HAL_MspInit(void)
 }
 
 /* USER CODE BEGIN 1 */
+int DrvHal_BoardInit(void)
+{
+    // 外设初始�? or hw 初始�?
+    //  MX_GPIO_Init();
+    MX_DMA_Init();
+    MX_ADC1_Init();
+    MX_I2C1_Init();
+    MX_TIM1_Init();
+    MX_TIM2_Init();
+    MX_TIM4_Init();
+    MX_USART1_UART_Init();
+    MX_USART6_UART_Init();
+    return 0;
+}
+INIT_BOARD_EXPORT(DrvHal_BoardInit);
 
 /* USER CODE END 1 */

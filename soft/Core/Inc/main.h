@@ -31,7 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+//int DrvHAL_Init(void);
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

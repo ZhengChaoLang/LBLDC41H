@@ -25,7 +25,7 @@ static void FOC_PID_Init()
     
 }
 
-//foc³õÊ¼»¯
+//focFOCåˆå§‹åŒ–
 void FOC_Init(foc_motor_t *motor, float u_dc, float phase_r, float phase_l,float pole)
 {
 	motor->u_dc = u_dc;
@@ -39,7 +39,7 @@ void FOC_Init(foc_motor_t *motor, float u_dc, float phase_r, float phase_l,float
 
 
 
-//foc_run º¯Êý
+//foc_run 
 void AppFoc_RunStep(void * motor)
 {
    float controls;

@@ -12,13 +12,13 @@
 #define FOC_PWM_SET_VLAUE_W(val)			__HAL_TIM_SET_COMPARE(&htim1,	TIM_CHANNEL_1,val)
 //foc_param_def
 #define FOC_CLARK_GAIN			0.6666667f
-#define FOC_SQRT_3					1.732050875f
+#define FOC_SQRT_3				1.732050875f
 #define FOC_PWM_T_COUNT			(17000-1)
 
 #define FOC_SIN(x)					arm_sin_q31(x)
 #define FOC_COS(x)					arm_cos_q31(x)
 
-/*-- µ•Œª◊™ªª∫Í --*/
+/*-- Âçï‰ΩçËΩ¨Êç¢ÂÆè --*/
 #ifndef PI
     #define PI 3.14159265359f
 #endif
