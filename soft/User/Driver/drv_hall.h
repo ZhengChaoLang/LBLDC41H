@@ -8,6 +8,7 @@
 #endif
 #define PI_DIV6 PI_DIV3/2
 
+
 /**
  * @brief 霍尔传感器扇区枚举定义
  * 对应电机换相的6个有效状态，每个扇区对应特定的绕组导通组合。
@@ -22,6 +23,12 @@ typedef enum{
     SECTOR6       // 第6扇区，对应霍尔传感器的第六个有效状态组合
 }DRVHALL_SECTOR;
 
+
+typedef enum{
+    HALL_FWD,     //正转
+    HALL_REV      //反转
+}DRVHALL_DIR;
+
 typedef struct{
     uint8_t init_flag;
     uint8_t installation_angle;
@@ -31,12 +38,18 @@ typedef struct{
     float posi;
     float speed;
     float acc;
+    
+    uint8_t now_hall_val;
+    uint8_t last_hall_val;
+    DRVHALL_DIR dir; 
 }DRV_HallSenSor_t;
 
  
-#define DRV_HALL_INSTALLATION_ANGLE60       0
-#define DRV_HALL_INSTALLATION_ANGLE120      1
+#define DRV_HALL_INSTALLATION_ANGLE60       0           // 60°安装
+#define DRV_HALL_INSTALLATION_ANGLE120      1           // 120°安装
 
+
+#define DRV_HALL_DIR_REVERSE    1         //0:自然 1：反转
 /* @    
  * @{
  */
