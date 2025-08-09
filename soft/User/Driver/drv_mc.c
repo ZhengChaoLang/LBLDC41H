@@ -15,7 +15,7 @@ typedef struct{
         ad_iqr_hook_t func;
         const char* name;
         void *param;
-    }hook[DRV_ADC_HOOK_NUB];
+    }hook[DRV_ADC_HOOK_NUB];    //回调函数
 }drv_adc_t;
 
 drv_adc_t drv_adc1={0};
@@ -63,7 +63,7 @@ void DrvAdc_IqrHook(drv_adc_t * adcx){
 
 //电压转换电流
 float Adc_SempVoltCurrent(float vlot){    
-    return vlot;
+    return (vlot-1.25f)/0.12f;
 }
 
 
@@ -76,8 +76,8 @@ void AdcMc_CurrentUpdata(foc_motor_t *motor, uint16_t*adc_val)
 
 //回调函数：三相电流值
 void Adc_CurrentUpdate_Hook(void* arg){
-    extern foc_motor_t m1; 
-    AdcMc_CurrentUpdata(&m1, (uint16_t *)arg);
+    extern foc_motor_t foc_m1; 
+    AdcMc_CurrentUpdata(&foc_m1, (uint16_t *)arg);
 }
 
 
@@ -113,7 +113,7 @@ void DrvMc_DisabilityPwm(void *param){
     HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_3);
       
 }
-// 
+//电机初始化 
 int DrvMc_Init(){
 	HAL_ADCEx_InjectedStart_IT(&hadc1);    
     DrvMc_EnablePwm(NULL);
@@ -121,8 +121,8 @@ int DrvMc_Init(){
     DrvAdc_SetIqrHook(&drv_adc1, Adc_CurrentUpdate_Hook, "CurUpdate");
     DrvAdc_SetIqrHook(&drv_adc1, AppFoc_RunStep, "Foc_Run");
 	DrvAdc_SetHookParam(&drv_adc1, "CurUpdate", (void*)adc_current_val);
-    extern foc_motor_t m1; 
-    DrvAdc_SetHookParam(&drv_adc1, "Foc_Run",(void*)&m1);
+    extern foc_motor_t foc_m1; 
+    DrvAdc_SetHookParam(&drv_adc1, "Foc_Run",(void*)&foc_m1);
     return 0;
 }
 INIT_DEVICE_EXPORT(DrvMc_Init);
@@ -136,7 +136,7 @@ void ad_debug_thread(void* arg)
         rt_thread_mdelay(10);
     }
 }
-void COM_DrvDebug()
+void COM_TEST_MCADC()
 {
     static rt_thread_t debug_ad =NULL; 
     if(debug_ad == NULL){
@@ -151,4 +151,4 @@ void COM_DrvDebug()
         debug_ad = NULL;
     }   
 }
-MSH_CMD_EXPORT(COM_DrvDebug , printf ad run);
+MSH_CMD_EXPORT(COM_TEST_MCADC , printf ad run);

@@ -6,19 +6,19 @@
 #include "tim.h"
 #include "pid.h"
 #include "app_foc.h"
-
+#include "drv_speed_sensor.h"
 #define FOC_PWM_SET_VLAUE_U(val)			__HAL_TIM_SET_COMPARE(&htim1,	TIM_CHANNEL_1,val)
-#define FOC_PWM_SET_VLAUE_V(val)			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1,val)
-#define FOC_PWM_SET_VLAUE_W(val)			__HAL_TIM_SET_COMPARE(&htim1,	TIM_CHANNEL_1,val)
+#define FOC_PWM_SET_VLAUE_V(val)			__HAL_TIM_SET_COMPARE(&htim1,   TIM_CHANNEL_2,val)
+#define FOC_PWM_SET_VLAUE_W(val)			__HAL_TIM_SET_COMPARE(&htim1,	TIM_CHANNEL_3,val)
 //foc_param_def
 #define FOC_CLARK_GAIN			0.6666667f
 #define FOC_SQRT_3				1.732050875f
-#define FOC_PWM_T_COUNT			(17000-1)
+#define FOC_PWM_T_COUNT			(5000)
 
-#define FOC_SIN(x)					arm_sin_q31(x)
-#define FOC_COS(x)					arm_cos_q31(x)
+#define FOC_SIN(x)					arm_sin_f32(x)
+#define FOC_COS(x)					arm_cos_f32(x)
 
-/*-- Âçï‰ΩçËΩ¨Êç¢ÂÆè --*/
+/*-- --*/
 #ifndef PI
     #define PI 3.14159265359f
 #endif
@@ -31,7 +31,7 @@
 
 typedef struct{
 	float d;
-	float	q;
+	float q;
 }foc_park_prarm_t;
 
 typedef struct{
@@ -50,6 +50,10 @@ typedef float (*FocPid_Cal_t)(FOC_PID_T * pid_handle, float fb);
 typedef void (*FocPid_SetRef_t)(FOC_PID_T * pid_handle, float ref);
 typedef void (*FocPid_GetRef_t)(FOC_PID_T * pid_handle);
 typedef float (*FocPid_GetOutput_t)(FOC_PID_T * pid_handle);
+
+#define FOC_HOOK_NUMBER 10
+typedef void (*Foc_Hook_t)(void *arg); 
+
 typedef struct{
 	FOC_PID_T* pid_currentLoop_id;
     FOC_PID_T* pid_currentLoop_iq;	
@@ -59,14 +63,19 @@ typedef struct{
     FocPid_SetRef_t     pid_setRef;
     FocPid_GetRef_t     pid_getRef;
     FocPid_GetOutput_t  pid_getOutput;
+
 }foc_Ctrl_prarm_t;
+
 
 typedef struct{
 	float u_dc;                         ///< ƒ∏œﬂµÁ—π
 	float pole;                         ///< º´∂‘ ˝
 	float phase_r;                      ///< œ‡µÁ◊Ë
 	float phase_l;                      ///<
-	
+    float phase_lq;                      ///<
+    float phase_ld;                      ///<
+	float flux;                         ///< ¥≈¡¥
+    
 	float theta_m;                      ///<ª˙–µΩ«∂»
 	float det_theta_m;                  ///<ª˙–µΩ«ÀŸ∂»
 	float theta_e;                      ///<µÁΩ«∂»
@@ -75,6 +84,10 @@ typedef struct{
 	foc_clark_prarm_t   u_alpha_beta;
     foc_Ctrl_prarm_t    ctrl;           ///<øÿ÷∆∆˜
     FocMode mode;
+    
+    Foc_Hook_t cal_before_hook[FOC_HOOK_NUMBER];
+    Foc_Hook_t cal_after_hook[FOC_HOOK_NUMBER];
+    speed_sensor_t* speed_sensor;
 }foc_motor_t;
 
 
@@ -85,7 +98,9 @@ foc_clark_prarm_t* FOC_CurrentLoopCal(foc_motor_t * motor ,float ref_iq);
 float FOC_SpeedLoopCal(foc_motor_t * motor, float ref_speed);
 float FOC_PositionLoopCal(foc_motor_t * motor, float ref_position_rad);
 
-
+void FOC_InvPark(foc_park_prarm_t* park_prarm, float theta, foc_clark_prarm_t* out_param);
+void Foc_AddCalBeforeHookFunc(foc_motor_t * motor, Foc_Hook_t hook_func );
+void Foc_AddCalAfterHookFunc(foc_motor_t * motor, Foc_Hook_t hook_func );
 float FOC_MapPi(float rad);
 
 #endif

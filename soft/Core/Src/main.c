@@ -90,7 +90,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-    goto JUMP_CUBE_INIT;
+    goto JUMP_CUBE_INIT;        //NOTE: 使用rtthread初始化
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -115,7 +115,7 @@ int main(void)
   while (1)
   {
      HAL_GPIO_TogglePin(RUN_LED_GPIO_Port,RUN_LED_Pin);
-     rt_thread_mdelay(300);
+     rt_thread_mdelay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

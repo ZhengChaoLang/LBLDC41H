@@ -88,7 +88,7 @@ void HAL_MspInit(void)
 int DrvHal_BoardInit(void)
 {
     // 外设初始�? or hw 初始�?
-    //  MX_GPIO_Init();
+    MX_GPIO_Init();
     MX_DMA_Init();
     MX_ADC1_Init();
     MX_I2C1_Init();

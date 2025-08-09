@@ -41,7 +41,8 @@ typedef struct{
     
     uint8_t now_hall_val;
     uint8_t last_hall_val;
-    DRVHALL_DIR dir; 
+    DRVHALL_DIR dir;
+    float posi_updata_dt;
 }DRV_HallSenSor_t;
 
  
@@ -61,7 +62,11 @@ typedef struct{
 
 
 void DrvHall_Init(DRV_HallSenSor_t* hall_sor);
+float DrvHall_GetSpeed(DRV_HallSenSor_t* hall_sor);
+float DrvHall_GetPosi(DRV_HallSenSor_t* hall_sor);
+float DrvHall_GetAcc(DRV_HallSenSor_t* hall_sor);
 
+void DrvHall_InterpolationPosi(void* arg);
 
 extern DRV_HallSenSor_t hall_sor1;
 

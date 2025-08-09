@@ -1,7 +1,11 @@
 #ifndef __DVR_SPEED_SENSOR_H_
 #define __DVR_SPEED_SENSOR_H_
 
-
+//typedef enum{
+//    
+//    
+//    
+//}SPEED_SENSOR_STATE;
 
 typedef void(*speed_sor_init)(void*arg);          //sensor init function point
 typedef float(*speed_sor_get)(void*arg);          //get sensor  data function point
@@ -15,12 +19,12 @@ typedef struct{
    
     float posi;                         // 获取位置
     float speed;                        // 获取速度
-    float acc;                          // 获取加速度   
-    
+    float acc;                          // 获取加速度       
 }speed_sensor_t;
 
 
-
-
-
+void SorSpeed_Init(speed_sensor_t *sor_init);
+float SorSpeed_GetPosition(speed_sensor_t *sensor);
+float SorSpeed_GetSpeed(speed_sensor_t *sensor);
+float SorSpeed_GetAcceleration(speed_sensor_t *sensor);
 #endif

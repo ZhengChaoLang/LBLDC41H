@@ -45,7 +45,7 @@ void FOC_InvPark(foc_park_prarm_t* park_prarm, float theta, foc_clark_prarm_t* o
 	out_param->beta	 = park_prarm->d * FOC_SIN(theta) + park_prarm->q * FOC_COS(theta);
 }
 
-
+uint32_t aa,bb,cc;
 /*
  * @brief: SVPWM
  * @param[in]:
@@ -59,7 +59,7 @@ void FOC_Svpwm(foc_motor_t* motor, foc_clark_prarm_t * u_two_aixs)
 	uint8_t sector = 0;
 	
 	u1 = u_two_aixs->beta;
-	u2 = (u_two_aixs->alpha - u_two_aixs->beta)/2.0f;
+	u2 = (1.7320508f*u_two_aixs->alpha - u_two_aixs->beta)/2.0f;
 	u3 = -(1.7320508f*u_two_aixs->alpha + u_two_aixs->beta)/2.0f;
 	
 	/*ÉÈÇøÅĞ¶Ï*/
@@ -87,7 +87,7 @@ void FOC_Svpwm(foc_motor_t* motor, foc_clark_prarm_t * u_two_aixs)
 				sector = 6;
 			break;	
 		default:
-			return;
+            break;               
 		
 	}
 	
@@ -124,14 +124,14 @@ void FOC_Svpwm(foc_motor_t* motor, foc_clark_prarm_t * u_two_aixs)
 			t2 = -x;
 			break;	
 		default:
-			return;
+			break;
 			
 	}
 	//·ÀÖ¹¹ıµ÷ÖÆ
 	if(t1 + t2 > FOC_PWM_T_COUNT){
 		t_temp = t1;
 		t1 = FOC_PWM_T_COUNT*t1/(t1+t2);
-		t2 = FOC_PWM_T_COUNT*t1/(t_temp+t2);
+		t2 = FOC_PWM_T_COUNT*t2/(t_temp+t2);
 	}
 	//t0 = (FOC_PWM_T_COUNT-t1-t2)/2;
 	float ta, tb, tc;
@@ -171,15 +171,19 @@ void FOC_Svpwm(foc_motor_t* motor, foc_clark_prarm_t * u_two_aixs)
 			t_cm1 = ta;
 			t_cm2 = tc;
 			t_cm3 = tb;
+            break;
 		default:
-			return;		
+			break;		
 	}
 		
 	if(t_cm1 > FOC_PWM_T_COUNT)t_cm1=FOC_PWM_T_COUNT;
 	if(t_cm2 > FOC_PWM_T_COUNT)t_cm2=FOC_PWM_T_COUNT;
 	if(t_cm3 > FOC_PWM_T_COUNT)t_cm3=FOC_PWM_T_COUNT;
-	
-	FOC_PWM_SET_VLAUE_U((uint32_t)t_cm1);	FOC_PWM_SET_VLAUE_V((uint32_t)t_cm2);
+	aa = t_cm1;
+    bb = t_cm2;
+    cc = t_cm3;
+	FOC_PWM_SET_VLAUE_U((uint32_t)t_cm1);	
+    FOC_PWM_SET_VLAUE_V((uint32_t)t_cm2);
 	FOC_PWM_SET_VLAUE_W((uint32_t)t_cm3);
 }
 
@@ -229,14 +233,45 @@ float FOC_PositionLoopCal(foc_motor_t * motor, float ref_position_rad)
  * @return:
  */
 float FOC_MapPi(float rad){
-	while(rad>PI){
-		rad-=PI;
+	while(rad>2*PI){
+		rad-=2*PI;
 	}
-	while(rad<-PI){
-		rad+=PI;
+	while(rad<0){
+		rad+=2*PI;
 	}
 	return rad;
 }
 
+/*
+ * @brief: focè®¡ç®—å‰çš„é’©å­å‡½æ•°
+ * @param[in]:
+ * @return:
+ */
+void Foc_AddCalBeforeHookFunc(foc_motor_t * motor, Foc_Hook_t hook_func )
+{
+    if(motor==NULL)return;
+    for(uint8_t i =0; i < FOC_HOOK_NUMBER; i++){
+        if(motor ->cal_before_hook[i] == NULL){
+            motor ->cal_before_hook[i] = hook_func;
+            break;
+        }
+    }  
+}
+
+/*
+ * @brief: focè®¡ç®—åé’©å­å‡½æ•°
+ * @param[in]:
+ * @return:
+ */
+void Foc_AddCalAfterHookFunc(foc_motor_t * motor, Foc_Hook_t hook_func )
+{
+    if(motor==NULL)return;
+    for(uint8_t i =0; i < FOC_HOOK_NUMBER; i++){
+        if(motor ->cal_after_hook[i] == NULL){
+            motor ->cal_after_hook[i] = hook_func;
+            break;
+        }
+    }  
+}
 
 

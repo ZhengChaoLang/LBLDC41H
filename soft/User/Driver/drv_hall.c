@@ -109,11 +109,15 @@ DRVHALL_SECTOR DrvHall_GetSector(DRV_HallSenSor_t* hall_sor){
     if(!hall_sor)return SECTOR_ERR;
     uint8_t sector = 0;
     uint8_t pin_val = 0;
+    
+    //读取霍尔值
     if(hall_sor == &hall_sor1){
         pin_val |= HAL_GPIO_ReadPin(HALL_U_GPIO_Port,HALL_U_Pin?1:0);
         pin_val |= (HAL_GPIO_ReadPin(HALL_V_GPIO_Port,HALL_V_Pin)?1:0)<<1;
         pin_val |= (HAL_GPIO_ReadPin(HALL_W_GPIO_Port,HALL_W_Pin)?1:0)<<2;
     }
+    
+    //判断方向
     hall_sor->now_hall_val = pin_val;
     if(pin_val >=1 || pin_val <=6)
         sector = hall_sor->search_table[pin_val];
@@ -121,7 +125,7 @@ DRVHALL_SECTOR DrvHall_GetSector(DRV_HallSenSor_t* hall_sor){
 }
 
 
-//msh
+//msh debug
 void hall_test_thread(void* arg)
 {
     while(1){
@@ -187,7 +191,11 @@ void DrvHall_Init(DRV_HallSenSor_t* hall_sor)
     hall_sor->init_flag = 1;//初始化
 }
 
-
+/*
+ * @brief: 判断当前运行方向
+ * @param[in]:
+ * @return: 
+ */
 DRVHALL_DIR DrvHall_GetDir(DRV_HallSenSor_t* hall_sor)
 {
     static uint8_t fliter_cnt =0;
@@ -222,9 +230,10 @@ DRVHALL_DIR DrvHall_GetDir(DRV_HallSenSor_t* hall_sor)
     
     hall_sor->last_hall_val = hall_sor->now_hall_val;
     last_dir = dir;
-    return hall_sor->dir;
-      
+    return hall_sor->dir;  
 }
+
+
 
 float DrvHall_GetSpeed(DRV_HallSenSor_t* hall_sor)
 {    
@@ -243,7 +252,16 @@ float DrvHall_GetAcc(DRV_HallSenSor_t* hall_sor)
 }
 
 
-
+/*
+ * @brief: 插补算法估计角度
+ * @param[in]:arg DRV_HallSenSor_t的句柄
+ * @return:
+ */
+void DrvHall_InterpolationPosi(void* arg)
+{
+    DRV_HallSenSor_t* sor = (DRV_HallSenSor_t*)arg;
+    sor->posi+= sor->speed * sor->posi_updata_dt;
+}
 
 
 

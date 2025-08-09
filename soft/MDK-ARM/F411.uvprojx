@@ -347,7 +347,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -434,6 +434,11 @@
               <FilePath>../Core/Src/adc.c</FilePath>
             </File>
             <File>
+              <FileName>i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Core/Src/i2c.c</FilePath>
+            </File>
+            <File>
               <FileName>dma.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/dma.c</FilePath>
@@ -480,11 +485,6 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
-            </File>
-            <File>
-              <FileName>i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Core/Src/i2c.c</FilePath>
             </File>
             <File>
               <FileName>tim.c</FileName>
@@ -689,6 +689,11 @@
               <FileType>1</FileType>
               <FilePath>..\User\Driver\drv_speed_sensor.c</FilePath>
             </File>
+            <File>
+              <FileName>drv_485.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Driver\drv_485.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -698,6 +703,11 @@
               <FileName>app_finsh_thread.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\App\app_finsh_thread.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\App\app_task.c</FilePath>
             </File>
           </Files>
         </Group>
