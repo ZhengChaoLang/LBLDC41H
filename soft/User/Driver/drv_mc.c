@@ -69,9 +69,9 @@ float Adc_SempVoltCurrent(float vlot){
 
 void AdcMc_CurrentUpdata(foc_motor_t *motor, uint16_t*adc_val)
 {    
-	motor->phase_i.a = Adc_SempVoltCurrent(adc_val[0]*3.3f/4095.0f);
-	motor->phase_i.b = Adc_SempVoltCurrent(adc_val[1]*3.3f/4095.0f);
-	motor->phase_i.c = Adc_SempVoltCurrent(adc_val[2]*3.3f/4095.0f);   
+	motor->phase_i.c = Adc_SempVoltCurrent((float)adc_val[0]*3.3f/4095.0f);
+	motor->phase_i.b = Adc_SempVoltCurrent((float)adc_val[1]*3.3f/4095.0f);
+	motor->phase_i.a = Adc_SempVoltCurrent((float)adc_val[2]*3.3f/4095.0f);   
 }
 
 //回调函数：三相电流值

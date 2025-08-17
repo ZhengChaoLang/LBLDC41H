@@ -67,7 +67,7 @@ float DrvHall_GetPosi(DRV_HallSenSor_t* hall_sor);
 float DrvHall_GetAcc(DRV_HallSenSor_t* hall_sor);
 
 void DrvHall_InterpolationPosi(void* arg);
-
+DRVHALL_SECTOR DrvHall_GetSector(DRV_HallSenSor_t* hall_sor);
 extern DRV_HallSenSor_t hall_sor1;
 
 #endif

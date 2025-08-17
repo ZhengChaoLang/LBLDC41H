@@ -121,7 +121,7 @@ DRVHALL_SECTOR DrvHall_GetSector(DRV_HallSenSor_t* hall_sor){
     hall_sor->now_hall_val = pin_val;
     if(pin_val >=1 || pin_val <=6)
         sector = hall_sor->search_table[pin_val];
-    return (DRVHALL_SECTOR)sector;       
+    return sector;       
 }
 
 
@@ -184,7 +184,9 @@ void DrvHall_Init(DRV_HallSenSor_t* hall_sor)
         hall_sor->search_table[0]++;        
     }
     //初始化 起始角度
-    hall_sor->posi = DrvHall_GetSector(hall_sor)*PI_DIV3 + PI_DIV6;
+    float p = DrvHall_GetSector(hall_sor)*PI_DIV3 + PI_DIV6;
+    hall_sor->posi = p;
+     
     hall_sor->speed = 0;
     hall_sor->acc   = 0;
     hall_sor->last_hall_val = hall_sor->now_hall_val;
@@ -259,6 +261,7 @@ float DrvHall_GetAcc(DRV_HallSenSor_t* hall_sor)
  */
 void DrvHall_InterpolationPosi(void* arg)
 {
+    if(!arg)return;
     DRV_HallSenSor_t* sor = (DRV_HallSenSor_t*)arg;
     sor->posi+= sor->speed * sor->posi_updata_dt;
 }

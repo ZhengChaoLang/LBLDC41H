@@ -19,11 +19,15 @@ typedef enum{
  * 不同模式对应不同的控制环路和调节目标。
  */
 typedef enum{
+    FOCMODE_CALI,
     FOCMODE_SVPWM,            // SVPWM模式（空间矢量脉宽调制），基础的PWM生成模式，直接输出电压矢量
     FOCMODE_CURRENT_LOOP,     // 电流环模式，通过闭环控制实现对电机相电流的精确调节
     FOCMODE_SPEED_LOOP,       // 速度环模式，在电流环基础上增加速度闭环控制，实现目标转速跟踪
     FOCMODE_POSI_LOOP         // 位置环模式，在速度环基础上增加位置闭环控制，实现精确的位置控制
 }FocMode;
+
+
+
 
 void AppFoc_RunStep(void * motor);
 
