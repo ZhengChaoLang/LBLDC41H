@@ -39,22 +39,22 @@ int FOC_m1_Init()
     foc_m1.pole = 4;
     foc_m1.u_dc =24;
     foc_m1.flux=0.1f;
-    foc_m1.mode = FOCMODE_SVPWM;
+    foc_m1.mode = FOCMODE_CURRENT_LOOP;
     //控制算法参数
     pid_mode_config_t pid_modconfig;
     pid_modconfig.deadband = 0;
     pid_modconfig.feedforward = 0;
     pid_modconfig.integral_isolated =0;
     pid_modconfig.integral_limit =1;
-    pid_modconfig.integral_separate =0;
+    pid_modconfig.integral_separate =1;
     
-    foc_pid_id.kp = 3.0f;
-    foc_pid_id.ki = 0.0f;
+    foc_pid_id.kp = 10.5f;
+    foc_pid_id.ki = 0.01f;
     foc_pid_id.kd = 0.0f;
-    Pid_SetLimtParam(&foc_pid_id, 24/2*0.85f, 5000);
+    Pid_SetLimtParam(&foc_pid_id, 24/2*0.85f, 1000);
     Pid_Init(&foc_pid_id, &pid_modconfig);
     
-    foc_pid_iq.kp = 3.0f;
+    //foc_pid_iq.kp = 5.0f;
     foc_pid_iq = foc_pid_id;
     Pid_Init(&foc_pid_iq, &pid_modconfig);
     
@@ -129,11 +129,15 @@ void AppFoc_Vf(void *arg)
 void AppFoc_CurrentLoop(void *arg)
 {
     foc_motor_t* motor = (foc_motor_t*)arg;
-    static float theta =0;
-    theta = FOC_MapPi(theta + 0.01f);
-    motor->theta_e = theta;
-    FOC_CurrentLoopCal(motor, 0.1f);
+//    static float theta =0;
+//    theta = FOC_MapPi(theta + 0.005F);
+     if(motor->speed_sensor )
+        motor->theta_e = FOC_MapPi(SorSpeed_GetPosition(motor->speed_sensor));
+    //motor->theta_e = theta;
+    
+     FOC_CurrentLoopCal(motor, -1.0f);       ///< 目标电流值
     FOC_Svpwm(motor, &motor->u_alpha_beta);
+     
 }
 
 

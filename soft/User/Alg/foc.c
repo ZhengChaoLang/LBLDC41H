@@ -218,9 +218,11 @@ foc_clark_prarm_t* FOC_CurrentLoopCal(foc_motor_t * motor, float ref_iq)
     i_d_q.q= Filter_LPS(&filter_iq, i_d_q.q);
     i_d_q.d = Filter_LPS(&filter_id, i_d_q.d);
     motor->i_d_q = i_d_q;
+    
     // 设置q轴电流PI控制器的参考值（目标值）
     motor->ctrl.pid_setRef(motor->ctrl.pid_currentLoop_iq, ref_iq);
     motor->ctrl.pid_setRef(motor->ctrl.pid_currentLoop_id, 0);
+    
     // d轴电流环PI计算：通常目标是将d轴电流控制为0（最大转矩控制策略）
     // 输入为当前d轴电流，输出为d轴电压指令
     u_d_q.d = motor->ctrl.pid_cal(motor->ctrl.pid_currentLoop_id, i_d_q.d);

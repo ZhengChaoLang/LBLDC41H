@@ -38,8 +38,10 @@ void app_test_thrad(void *arg)
           foc_clark_prarm_t i_alph_beta;
           FOC_Clark(&foc_m1.phase_i, &i_alph_beta);
 
-        FOC_Park(&i_alph_beta, debug_theta, &foc_m1.i_d_q);
-       rt_kprintf("%d,%d,%d,%d\n", (int)(i_alph_beta.alpha*1000), (int)(i_alph_beta.beta*1000),(int)(foc_m1.i_d_q.d*1000), (int)(foc_m1.i_d_q.q*1000));
+        FOC_Park(&i_alph_beta,foc_m1.theta_e, &foc_m1.i_d_q);
+        //rt_kprintf("%d,%d,%d,%d\n", (int)(i_alph_beta.alpha*1000), (int)(i_alph_beta.beta*1000),(int)(foc_m1.i_d_q.d*1000), (int)(foc_m1.i_d_q.q*1000));
+         rt_kprintf("%d,%d,%d,%d\n", (int)(foc_m1.ctrl.pid_currentLoop_iq->ref*1000), (int)(foc_m1.i_d_q.q*1000),\
+                    (int)(foc_m1.ctrl.pid_currentLoop_id->ref*1000), (int)(foc_m1.i_d_q.d*1000));  
         //rt_kprintf("%d,%d,%d\n", (int)(foc_m1.phase_i.a*1000), (int)(foc_m1.phase_i.b*1000),(int)(foc_m1.phase_i.c*1000));
         //rt_kprintf("%d,%d\n", (int)(foc_m1.i_d_q.d*1000), (int)(foc_m1.i_d_q.q*1000));
 //        rt_kprintf("%d,%d,%d\n", (uint16_t)(foc_m1.ctrl.pid_currentLoop_iq->ref*100),\
