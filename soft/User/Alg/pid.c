@@ -192,5 +192,21 @@ float Pid_GetRef(pid_t * pid_handle)
     return pid_handle->ref;
 }
 
+/*
+ * @brief: 设置PID控制器的比例(P)、积分(I)、微分(D)系数
+ *         用于配置PID控制器的核心参数，这些参数直接影响控制算法的响应特性
+ * @param[in]: pid_handle - PID控制器实例的指针，指向需要配置参数的PID结构体
+ * @param[in]: kp - 比例系数(Proportional Gain)，影响系统的响应速度和稳态误差
+ * @param[in]: ki - 积分系数(Integral Gain)，用于消除系统的稳态误差
+ * @param[in]: kd - 微分系数(Derivative Gain)，用于抑制系统超调，提高稳定性
+ * @return: 无返回值
+ */
+void Pid_SetGains(pid_t * pid_handle, float kp, float ki, float kd)
+{
+    if(!pid_handle)return;
+    pid_handle->kp = kp;
+    pid_handle->ki = ki;
+    pid_handle->kd = kd;  // 修正原代码中的笔误（此处原应为kd）
+}
 
 

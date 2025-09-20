@@ -239,11 +239,27 @@ foc_clark_prarm_t* FOC_CurrentLoopCal(foc_motor_t * motor, float ref_iq)
     return &motor->u_alpha_beta;
 }
 
+/**
+ * @brief 执行FOC（磁场定向控制）中的速度环PID计算
+ * 
+ * 该函数实现电机速度闭环控制，通过将目标速度与当前速度（由电角度推导）进行比较，
+ * 经PID控制器计算后输出速度环的调节量（通常为电流环的目标电流），实现对电机转速的精确控制。
+ * 
+ * @param[in,out] motor 指向FOC电机控制结构体的指针，包含电机控制所需的所有信息
+ *                     （如PID控制器实例、当前电角度等）
+ * @param[in] ref_speed 目标速度值，单位（rad/s）
+ * @return float 速度环PID计算输出值，作为电流环的参考输入（通常为q轴目标电流）
+ * 
+ * @note 1. 函数内部通过调用pid_setRef设置速度环PID的目标值
+ *       2. 电机当前速度通过电角度(motor->det_theta_e)计算得出
+ *       3. 需确保motor指针有效且已完成初始化，否则可能导致未定义行为
+ */
 //速度环计算
 float FOC_SpeedLoopCal(foc_motor_t * motor, float ref_speed)
 {
-	//�ٶȻ�PID
-    return motor->ctrl.pid_cal(motor->ctrl.pid_speedLoop, OMEGA_TO_RPM(motor->det_theta_m));    
+    //设置PID目标值并计算输出
+    motor->ctrl.pid_setRef(motor->ctrl.pid_speedLoop, ref_speed);
+    return motor->ctrl.pid_cal(motor->ctrl.pid_speedLoop, motor->det_theta_e);    
 }
 
 //位置环计算
@@ -253,7 +269,7 @@ float FOC_PositionLoopCal(foc_motor_t * motor, float ref_position_rad)
     return motor->ctrl.pid_cal(motor->ctrl.pid_positionLoop, OMEGA_TO_RPM(motor->theta_m));    
 }
 /*
- * @brief: ���Ƕ�ӳ������ [-pi , pi]
+ * @brief: ���Ƕ�ӳ������ [0, 2pi]
  * @param[in]:
  * @return:
  */
@@ -366,4 +382,48 @@ float Foc_Elec2MechAngle(foc_motor_t * motor, float angle)
     if(!motor||motor->pole == 0)return -9999;
     return angle/motor->pole;
 }
+
+//============================
+/*
+ * @brief: 配置FOC控制器各环路的PID句柄
+ *         用于将初始化好的电流环(d/q轴)、速度环、位置环PID控制器句柄
+ *         关联到FOC电机控制结构体，建立控制环路与电机实例的映射关系
+ * @param[in]: motor - 指向FOC电机控制结构体的指针，待配置的电机实例
+ * @param[in]: id_handle - d轴电流环PID控制器句柄
+ * @param[in]: iq_handle - q轴电流环PID控制器句柄
+ * @param[in]: speed_handle - 速度环PID控制器句柄
+ * @param[in]: posi_handle - 位置环PID控制器句柄
+ * @return: 0 - 配置成功；1 - 配置失败（motor指针为NULL）
+ */
+uint8_t Foc_SetCtrlHandle(foc_motor_t * motor, FOC_PID_T* id_handle , FOC_PID_T* iq_handle ,FOC_PID_T* speed_handle ,FOC_PID_T* posi_handle)
+{
+    if(!motor)return 1;
+    motor->ctrl.pid_currentLoop_id  = id_handle;
+    motor->ctrl.pid_currentLoop_iq  = iq_handle;
+    motor->ctrl.pid_speedLoop  = speed_handle;    
+    motor->ctrl.pid_positionLoop = posi_handle;
+    return 0;
+}
+
+/*
+ * @brief: 配置FOC控制器的PID功能函数
+ *         用于为FOC电机控制结构体设置PID控制器的核心操作函数，
+ *         包括计算、设置参考值、获取参考值和获取输出值的接口
+ * @param[in]: motor - 指向FOC电机控制结构体的指针，待配置的电机实例
+ * @param[in]: cal - PID计算函数指针，用于执行PID控制算法的计算过程
+ * @param[in]: set_ref - 设置PID参考值的函数指针
+ * @param[in]: get_ref - 获取当前PID参考值的函数指针
+ * @param[in]: get_out - 获取PID计算输出值的函数指针
+ * @return: 0 - 配置成功；1 - 配置失败（任一输入参数为NULL）
+ */
+uint8_t Foc_SetCtrlFunction(foc_motor_t * motor,FocPid_Cal_t cal, FocPid_SetRef_t set_ref, FocPid_GetRef_t get_ref, FocPid_GetOutput_t get_out)
+{
+    if(!(motor && cal && set_ref && get_ref && get_out))return 1;
+    motor->ctrl.pid_cal = cal;
+    motor->ctrl.pid_setRef = set_ref;
+    motor->ctrl.pid_getRef = get_ref;
+    motor->ctrl.pid_getOutput = get_out;
+    return 0;
+}
+
 

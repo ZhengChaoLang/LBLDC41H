@@ -85,7 +85,8 @@ typedef struct{
 	float theta_m;                      ///<��е�Ƕ�
 	float det_theta_m;                  ///<��е���ٶ�
 	float theta_e;                      ///<��Ƕ�
-	
+	float det_theta_e;
+        
     foc_phase_prarm_t   phase_i;        ///<�����
 	foc_clark_prarm_t   u_alpha_beta;
     foc_park_prarm_t i_d_q;
@@ -120,7 +121,7 @@ float FOC_SpeedLoopCal(foc_motor_t * motor, float ref_speed);
 // FOC位置环计算
 float FOC_PositionLoopCal(foc_motor_t * motor, float ref_position_rad);
 
-// 角度映射到[-π, π]范围（注：原函数实现实际映射到[0, 2π]，声明保持函数名）
+// 原函数实现实际映射到[0, 2π]
 float FOC_MapPi(float rad);
 
 // 添加FOC计算前的钩子函数
@@ -143,4 +144,10 @@ float Foc_Mech2ElecAngle(foc_motor_t * motor, float angle);
 
 // 电角度转换为机械角度
 float Foc_Elec2MechAngle(foc_motor_t * motor, float angle);
+
+
+uint8_t Foc_SetCtrlHandle(foc_motor_t * motor, FOC_PID_T* id_handle , FOC_PID_T* iq_handle ,FOC_PID_T* speed_handle ,FOC_PID_T* posi_handle);
+uint8_t Foc_SetCtrlFunction(foc_motor_t * motor,FocPid_Cal_t cal, FocPid_SetRef_t set_ref, FocPid_GetRef_t get_ref, FocPid_GetOutput_t get_out);
+
+
 #endif

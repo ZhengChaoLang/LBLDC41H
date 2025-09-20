@@ -1,6 +1,6 @@
 #ifndef __DVR_SPEED_SENSOR_H_
 #define __DVR_SPEED_SENSOR_H_
-
+#include "main.h"
 //typedef enum{
 //    
 //    
@@ -27,4 +27,8 @@ void SorSpeed_Init(speed_sensor_t *sor_init);
 float SorSpeed_GetPosition(speed_sensor_t *sensor);
 float SorSpeed_GetSpeed(speed_sensor_t *sensor);
 float SorSpeed_GetAcceleration(speed_sensor_t *sensor);
+
+uint8_t SorSpeed_SetSorFunction(speed_sensor_t *sensor, speed_sor_init init_func, speed_sor_get get_posi, speed_sor_get get_speed, speed_sor_get get_acc);
+uint8_t SorSpeed_SetDrvHand(speed_sensor_t *sensor, void * drv_sor_handle);
+
 #endif

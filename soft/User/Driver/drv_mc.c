@@ -66,7 +66,7 @@ float Adc_SempVoltCurrent(float vlot){
     return (vlot-1.25f)/0.12f;
 }
 
-
+//
 void AdcMc_CurrentUpdata(foc_motor_t *motor, uint16_t*adc_val)
 {    
 	motor->phase_i.c = Adc_SempVoltCurrent((float)adc_val[0]*3.3f/4095.0f); //注意采样桥臂

@@ -64,7 +64,7 @@ typedef struct{
 
 void Pid_Init(pid_t * pid_handle,const pid_mode_config_t *mode);
 float Pid(pid_t * pid_handle, float fb);
-
+void Pid_SetGains(pid_t * pid_handle, float kp, float ki, float kd);
 void Pid_SetRef(pid_t * pid_handle,float ref);
 void Pid_SetOutLimt(pid_t * pid_handle,float limt_value);
 void Pid_SetFeedforward_ConstValue(pid_t * pid_handle,float ff_value);
