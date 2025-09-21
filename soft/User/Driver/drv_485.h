@@ -10,9 +10,9 @@
 #define RS485_UARTx         USART6            // 所用UART外设
 
 // 切换RS485为接收模式
-#define RS485_DEPIN_READ    HAL_GPIO_WritePin(RS485_DE_GPIO_Port, RS485_DE_Pin, RS485_RX_LEVEL)
+#define _RS485_DEPIN_READ()    HAL_GPIO_WritePin(RS485_DE_GPIO_Port, RS485_DE_Pin, RS485_RX_LEVEL)
 // 切换RS485为发送模式
-#define RS485_DEPIN_Write   HAL_GPIO_WritePin(RS485_DE_GPIO_Port, RS485_DE_Pin, RS485_TX_LEVEL)
+#define _RS485_DEPIN_Write()   HAL_GPIO_WritePin(RS485_DE_GPIO_Port, RS485_DE_Pin, RS485_TX_LEVEL)
 
 
 

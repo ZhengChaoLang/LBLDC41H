@@ -67,6 +67,11 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size){
 	if(huart->Instance == USART1){
 		rt_mb_send(msh_rx_buff_mb, Size);
 	}
+     if(huart->Instance == USART6)
+     {
+         extern void DrvRs485_RxProcess(uint16_t Size);
+         DrvRs485_RxProcess(Size);
+     }   
 }
 
 /*
