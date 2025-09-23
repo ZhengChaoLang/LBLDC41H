@@ -4,8 +4,10 @@
 #include "main.h"
 
 /** RS485通信配置宏 */
-#define RS485_RX_LEVEL      (GPIO_PIN_RESET)  // 接收模式电平
-#define RS485_TX_LEVEL      (!RS485_RX_LEVEL) // 发送模式电平（与接收相反）
+// 在drv_485.h中定义
+#define RS485_TX_LEVEL  GPIO_PIN_SET  // 发送时DE置高
+#define RS485_RX_LEVEL  GPIO_PIN_RESET // 接收时DE置低
+
 
 #define RS485_UARTx         USART6            // 所用UART外设
 

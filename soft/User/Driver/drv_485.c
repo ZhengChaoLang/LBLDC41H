@@ -93,7 +93,7 @@ rt_thread_t thread_485Cmd;
 int DrvRs485_Init()
 {
     rs485_mb_rx = rt_mb_create("rs485_rx", RS485_BUF_SIZE, RT_IPC_FLAG_FIFO);
-    rs485_mb_tx = rt_mb_create("rs485_rx", RS485_BUF_SIZE, RT_IPC_FLAG_FIFO);
+    rs485_mb_tx = rt_mb_create("rs485_tx", RS485_BUF_SIZE, RT_IPC_FLAG_FIFO);
     rs485_event_de = rt_event_create("rs485_de", RT_IPC_FLAG_PRIO);
 
     
@@ -127,7 +127,7 @@ INIT_APP_EXPORT(DrvRs485_Init);
  */
 void DrvRs485_ChangeBaudAndVerify(uint32_t baud, uint32_t verify)
 {
-  /* USER CODE END USART1_Init 1 */
+  /* USER CODE END USART6_Init 1 */
   huart1.Instance = RS485_UARTx;
   huart1.Init.BaudRate = baud;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
@@ -167,13 +167,13 @@ void DrvRs485_TxProcess(void *arg)
     
     rs485_buf_data_t *tx_buf =NULL;
     
-    _RS485_READ_DATA(rs485_buf.tx_buf[0].buf, RS485_DATA_BUFSIZE);
+    _RS485_READ_DATA(rs485_buf.rx_buf[0].buf, RS485_DATA_BUFSIZE);
     __HAL_DMA_DISABLE_IT(huart6.hdmarx, DMA_IT_HT);
     __HAL_DMA_DISABLE_IT(huart6.hdmatx, DMA_IT_HT);
     while(1){    
         rt_mb_recv(rs485_mb_tx, (rt_ubase_t*)&tx_buf, RT_WAITING_FOREVER); 
-        _RS485_DEPIN_Write();
-        
+        HAL_GPIO_WritePin(RS485_DE_GPIO_Port, RS485_DE_Pin, RS485_TX_LEVEL);
+        rt_thread_mdelay(1);    //485发送间隔 modbus   
         _RS485_SEND_DATA(tx_buf->buf, tx_buf->size);
         //rt_thread_mdelay(2);    //485发送间隔 modbus     
     }
@@ -215,9 +215,16 @@ void DrvRs485_DeThread(void *arg)
        if(event_type == RS485_EVENT_DE){
             _RS485_DEPIN_READ();
        }
-       else if(event_type == RS485_EVENT_DE){
+       else if(event_type&RS485_EVENT_ERR){
+           rt_thread_mdelay(1);
+           
             _RS485_DEPIN_READ();
+           HAL_UART_Abort(&huart6);
+           __HAL_UART_CLEAR_PEFLAG(&huart6);
+           __HAL_UART_CLEAR_FEFLAG(&huart6);
+           _RS485_READ_DATA(rs485_buf.rx_buf[rs485_buf.new_rx_index].buf, RS485_DATA_BUFSIZE);
            //复位串口
+           
        }
     }
 }
